@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.FileProviders;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -19,6 +22,16 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Views")),
+    RequestPath = "/Views",
+    ContentTypeProvider = new FileExtensionContentTypeProvider
+    {
+        Mappings = { [".js"] = "application/javascript"}
+    }
+});
 
 app.MapControllerRoute(
     name: "default",
